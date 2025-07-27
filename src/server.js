@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import userRoutes from "./routes/user_routes.js";
+import musicRoutes from "./routes/cancion_routes.js"; // <-- Importa las rutas de música
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 
 // Rutas
 app.use("/music/usuarios", userRoutes);
+app.use("/music/canciones", musicRoutes); // <-- Agrega la ruta de música
 
 // Ruta 404 para endpoints no encontrados
 app.use((req, res) => res.status(404).send("🚫 Endpoint no encontrado - 404"));

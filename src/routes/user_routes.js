@@ -14,13 +14,13 @@ import {
 } from "../controllers/user_controller.js";
 import verificarAuth  from "../middlewares/authmiddleware.js";
 
-import parser from "../config/multer.js";
+import upload from "../config/multer.js";
 
 
 const router = express.Router();
 
 // Configuración de Multer (subida de imágenes)
-router.post("/registro", parser.single("imagen"), registro);
+router.post("/registro", upload.single("imagen"), registro);
 
 
 router.post("/login", login);
@@ -33,7 +33,7 @@ router.post("/recuperar-password/:token", nuevoPassword);
 // 🟡 Rutas protegidas (requieren JWT)
 router.get("/perfil", verificarAuth, obtenerPerfil);
 router.put("/actualizar-perfil", verificarAuth, actualizarPerfil);
-router.put("/actualizar-imagen", verificarAuth, parser.single("imagen"), actualizarImagenPerfil);
+router.put("/actualizar-imagen", verificarAuth, upload.single("imagen"), actualizarImagenPerfil);
 router.put("/actualizar-password", verificarAuth, actualizarPassword);
 
 export default router;
