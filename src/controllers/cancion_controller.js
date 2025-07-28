@@ -134,11 +134,28 @@ const editarCancion = async (req, res) => {
   }
 };
 
+// 📌 Buscar canciones por género
+const buscarPorGenero = async (req, res) => {
+  const { genero } = req.query;
+
+  try {
+    if (!genero) return res.status(400).json({ msg: "El género es requerido" });
+
+    const canciones = await Cancion.find({
+      genero: { $regex: new RegExp(genero, "i") } // búsqueda insensible a mayúsculas
+    }).sort({ createdAt: -1 });
+
+    res.json(canciones);
+  } catch (error) {
+    res.status(500).json({ msg: "Error al buscar canciones por género" });
+  }
+};
 
 export { 
     subirCancion, 
     obtenerCanciones,
     obtenerCancionesPorArtista,
     eliminarCancion,
-    editarCancion
+    editarCancion,
+    buscarPorGenero
  };

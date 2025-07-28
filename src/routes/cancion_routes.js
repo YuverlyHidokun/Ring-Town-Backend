@@ -5,7 +5,8 @@ import {
     obtenerCanciones,
     obtenerCancionesPorArtista,
     eliminarCancion,
-    editarCancion } from "../controllers/cancion_controller.js";
+    editarCancion,
+    buscarPorGenero } from "../controllers/cancion_controller.js";
 
 import verificarAuth  from "../middlewares/authmiddleware.js";
 import upload from "../config/multer.js";
@@ -22,6 +23,8 @@ router.post("/", verificarAuth, upload.fields([
 router.get("/", obtenerCanciones);
 
 router.get("/artista/:id", obtenerCancionesPorArtista);
+
+router.get("/buscar/genero", buscarPorGenero);
 
 router.delete("/:id", verificarAuth, eliminarCancion);
 

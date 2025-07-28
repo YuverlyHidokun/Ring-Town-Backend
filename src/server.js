@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import userRoutes from "./routes/user_routes.js";
 import musicRoutes from "./routes/cancion_routes.js"; // <-- Importa las rutas de música
+import playlistRoutes from "./routes/playlist_routes.js";
 
 dotenv.config();
 
@@ -24,7 +25,8 @@ app.get("/", (req, res) => {
 
 // Rutas
 app.use("/music/usuarios", userRoutes);
-app.use("/music/canciones", musicRoutes); // <-- Agrega la ruta de música
+app.use("/music/canciones", musicRoutes);
+app.use("/music/playlists", playlistRoutes);
 
 // Ruta 404 para endpoints no encontrados
 app.use((req, res) => res.status(404).send("🚫 Endpoint no encontrado - 404"));
