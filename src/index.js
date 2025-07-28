@@ -7,8 +7,7 @@ import connection from './database.js';
 
 connection();
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`✅ Server ok on http://localhost:${PORT}`);
+app.listen(app.get('port'), () => {
+  console.log(`✅ Server ok on http://localhost:${app.get('port')}`);
 });
+
