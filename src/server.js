@@ -12,7 +12,16 @@ dotenv.config();
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: process.env.URL_FRONTEND || 'http://localhost:8100',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // si usas cookies o autenticación, sino false o elimina esta línea
+}));
+
+// Esto es importante para responder bien al preflight OPTIONS
+app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
