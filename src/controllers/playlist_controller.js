@@ -1,5 +1,4 @@
 import Playlist from "../models/playlist.js";
-const mongoose = require('mongoose'); // si no está importado ya
 
 // Crear playlist
 const crearPlaylist = async (req, res) => {
