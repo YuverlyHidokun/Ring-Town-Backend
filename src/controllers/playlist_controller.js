@@ -35,16 +35,31 @@ const agregarCancion = async (req, res) => {
   try {
     const { playlistId, cancionId } = req.body;
 
+    // Validar que los IDs sean ObjectId válidos
+    if (!playlistId || !cancionId) {
+      return res.status(400).json({ msg: "playlistId y cancionId son requeridos" });
+    }
+    if (!/^[a-fA-F0-9]{24}$/.test(playlistId) || !/^[a-fA-F0-9]{24}$/.test(cancionId)) {
+      return res.status(400).json({ msg: "IDs inválidos" });
+    }
+
     const playlist = await Playlist.findById(playlistId);
     if (!playlist) return res.status(404).json({ msg: "Playlist no encontrada" });
 
-    if (!playlist.canciones.includes(cancionId)) {
-      playlist.canciones.push(cancionId);
-      await playlist.save();
+    // Evitar duplicados (comparar como string, ignorando nulos)
+    const existe = playlist.canciones.some(
+      id => id && id.toString() === cancionId
+    );
+    if (existe) {
+      return res.status(400).json({ msg: "La canción ya está en la playlist" });
     }
+
+    playlist.canciones.push(cancionId);
+    await playlist.save();
 
     res.json({ msg: "Canción agregada a playlist", playlist });
   } catch (error) {
+    console.error("Error al agregar canción:", error);
     res.status(500).json({ msg: "Error al agregar canción", error: error.message });
   }
 };
