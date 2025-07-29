@@ -30,5 +30,13 @@ app.use("/music/playlists", playlistRoutes);
 
 // Ruta 404 para endpoints no encontrados
 app.use((req, res) => res.status(404).send("🚫 Endpoint no encontrado - 404"));
+app.use((err, req, res, next) => {
+  console.error("💥 Error global:", err, err?.message, err?.stack);
+  res.status(500).json({
+    msg: "Error interno del servidor",
+    error: err?.message || String(err),
+    stack: err?.stack || String(err)
+  });
+});
 
 export default app;

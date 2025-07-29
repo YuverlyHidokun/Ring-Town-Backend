@@ -1,19 +1,33 @@
 import Cancion from "../models/song.js";
 import { v2 as cloudinary } from "cloudinary";
+import util from "util";
 
-// 📌 Subir nueva canción
 const subirCancion = async (req, res) => {
   try {
-    const { titulo, genero } = req.body;
-    const usuarioId = req.usuario._id;
+    // Loguea todo el body y los archivos
+    console.log("BODY:", req.body);
+    console.log("FILES:", req.files);
 
+    const { titulo, genero } = req.body;
+    const usuarioId = req.usuario?._id;
+
+    // Verifica usuario
+    if (!usuarioId) {
+      return res.status(401).json({ msg: "Usuario no autenticado" });
+    }
+
+    // Verifica archivos
     const audioFile = req.files?.audio?.[0];
     const portadaFile = req.files?.portada?.[0];
+
+    console.log("audioFile:", audioFile);
+    console.log("portadaFile:", portadaFile);
 
     if (!audioFile || !portadaFile) {
       return res.status(400).json({ msg: "Audio y portada son requeridos" });
     }
 
+    // Crea la canción
     const nuevaCancion = new Cancion({
       titulo,
       artista: req.usuario.nombre + " " + req.usuario.apellido,
@@ -32,12 +46,16 @@ const subirCancion = async (req, res) => {
       cancion: nuevaCancion,
     });
   } catch (error) {
-    console.error("❌ Error al subir canción:", error);
-    res.status(500).json({ msg: "Error al subir canción", error: error.message });
+    // Log detallado del error
+    console.error("❌ Error al subir canción:", util.inspect(error, { depth: null }));
+    res.status(500).json({
+      msg: "Error al subir canción",
+      error: error?.message || String(error),
+      stack: error?.stack || String(error),
+      details: util.inspect(error, { depth: null })
+    });
   }
 };
-
-
 
 // 📌 Obtener todas las canciones
 const obtenerCanciones = async (req, res) => {
