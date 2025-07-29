@@ -173,7 +173,8 @@ const actualizarPassword = async (req, res) => {
 
 // 📌 OBTENER PERFIL
 const obtenerPerfil = (req, res) => {
-  res.json(req.usuario); // el middleware ya puso el usuario
+  const usuario = req.usuario;
+  res.json(usuario);
 };
 
 // 📌 ACTUALIZAR PERFIL

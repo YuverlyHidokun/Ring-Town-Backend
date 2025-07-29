@@ -119,6 +119,25 @@ const editarPlaylist = async (req, res) => {
   }
 };
 
+// Obtener una playlist por ID (con todas sus canciones)
+const obtenerPlaylistPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const playlist = await Playlist.findById(id)
+      .populate("canciones")
+      .populate("creadaPor", "nombre email"); // opcional: incluir nombre y email del creador
+
+    if (!playlist) {
+      return res.status(404).json({ msg: "Playlist no encontrada" });
+    }
+
+    res.json(playlist);
+  } catch (error) {
+    console.error("❌ Error al obtener playlist por ID:", error);
+    res.status(500).json({ msg: "Error al obtener playlist" });
+  }
+};
 
 export {
   crearPlaylist,
@@ -126,5 +145,6 @@ export {
   agregarCancion,
   eliminarCancion,
   eliminarPlaylist,
-  editarPlaylist
+  editarPlaylist,
+  obtenerPlaylistPorId
 };
