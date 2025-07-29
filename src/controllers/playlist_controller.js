@@ -35,27 +35,16 @@ const agregarCancion = async (req, res) => {
   try {
     const { playlistId, cancionId } = req.body;
 
-    // Validar que los IDs tengan formato ObjectId válido
-    if (!mongoose.Types.ObjectId.isValid(playlistId) || !mongoose.Types.ObjectId.isValid(cancionId)) {
-      return res.status(400).json({ msg: "IDs inválidos" });
-    }
-
     const playlist = await Playlist.findById(playlistId);
     if (!playlist) return res.status(404).json({ msg: "Playlist no encontrada" });
 
-    // Convertir cancionId a ObjectId para comparar
-    const cancionObjectId = mongoose.Types.ObjectId(cancionId);
-
-    // Verificar si ya existe la canción en la playlist (comparar ObjectIds)
-    const existe = playlist.canciones.some(id => id.equals(cancionObjectId));
-    if (!existe) {
-      playlist.canciones.push(cancionObjectId);
+    if (!playlist.canciones.includes(cancionId)) {
+      playlist.canciones.push(cancionId);
       await playlist.save();
     }
 
     res.json({ msg: "Canción agregada a playlist", playlist });
   } catch (error) {
-    console.error("Error en agregarCancion:", error);
     res.status(500).json({ msg: "Error al agregar canción", error: error.message });
   }
 };
