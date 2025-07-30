@@ -184,7 +184,6 @@ const actualizarPerfil = async (req, res) => {
     if (!usuario) return res.status(404).json({ msg: "Usuario no encontrado" });
 
     const { nombre, apellido, numero, email } = req.body;
-
     usuario.nombre = nombre || usuario.nombre;
     usuario.apellido = apellido || usuario.apellido;
     usuario.numero = numero || usuario.numero;
@@ -203,30 +202,19 @@ const actualizarImagenPerfil = async (req, res) => {
     const usuario = await Usuario.findById(req.usuario._id);
     if (!usuario) return res.status(404).json({ msg: "Usuario no encontrado" });
 
+    if (!req.file) return res.status(400).json({ msg: "No se envió imagen" });
+
+    // Borra la imagen anterior si existe
     if (usuario.imagenPublicId) {
       await cloudinary.uploader.destroy(usuario.imagenPublicId);
     }
-
-    const file = req.file;
-
-    if (!file || (!file.path && !file.secure_url)) {
-      return res.status(400).json({ msg: "No se recibió ninguna imagen válida" });
-    }
-
-    usuario.imagenUrl = file.path || file.secure_url;
-    usuario.imagenPublicId = file.filename || file.public_id;
+    usuario.imagenUrl = req.file.path || req.file.secure_url;
+    usuario.imagenPublicId = req.file.filename || req.file.public_id;
 
     await usuario.save();
-
-    res.json({
-      msg: "Imagen de perfil actualizada correctamente",
-      usuario: {
-        nombre: usuario.nombre,
-        imagenUrl: usuario.imagenUrl
-      }
-    });
+    res.json({ msg: "Imagen actualizada", usuario });
   } catch (error) {
-    res.status(500).json({ msg: "Error al actualizar imagen de perfil" });
+    res.status(500).json({ msg: "Error al actualizar imagen" });
   }
 };
 
